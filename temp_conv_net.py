@@ -44,12 +44,12 @@ model.fit(train_x, train_y, epochs=epochs, batch_size=batch_size, verbose=False)
 # print(accuracy)
 
 
-# pad - most recent edge is important 
-# replace maxpooling with dilated kernel to preserve data - geoff hinton.
-# replace maxpooling with stride = 2 - 'learnable pooling, all-convolution network'
-# batch norm on conv layers
-# groups = channels maintains depthwise separation.  Add same multiple of filters?
-# normalise by delta from SMA
-# tf.data.shuffle()
-# l2 less sensitive to small changes (noise), l1 blocks some inputs
-# layers.DepthwiseConv1D()
+## pad - most recent edge is important!
+## replace maxpooling with dilated kernel to preserve data - geoff hinton.
+## replace maxpooling with stride = 2 - 'learnable pooling, all-convolution network'
+## batch norm on conv layers?
+## groups = channels maintains depthwise separation.  Add same multiple of filters?
+## normalise by delta from SMA
+## tf.data.shuffle()
+## l2 less sensitive to small changes (noise), l1 blocks some inputs
+## layers.DepthwiseConv1D() reduces number of parameters
