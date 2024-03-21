@@ -139,8 +139,8 @@ print('mean:', df.stack().mean())
 
 # create numpy arrays to receive data
 price_series_data = np.zeros(shape=(WINDOW, CHANNELS))
-time_cat_data = np.zeros(shape=(WINDOW, 31))
-target_cat_data = np.zeros(shape=(WINDOW, 3))
+time_cat_data = np.zeros(shape=(1, 31))
+target_cat_data = np.zeros(shape=(1, 3))
 
 batch_size = (len(df)-WINDOW) // STEP
 
@@ -160,8 +160,8 @@ for i in range(batch_size):
 
 # reshape arrays
 price_series_data = np.reshape(price_series_data, (batch_size+1, WINDOW, CHANNELS))
-time_cat_data = np.reshape(time_cat_data, (batch_size+1, WINDOW, 31))
-target_cat_data = np.reshape(target_cat_data, (batch_size+1, WINDOW, 3))
+time_cat_data = np.reshape(time_cat_data, (batch_size+1, 31))
+target_cat_data = np.reshape(target_cat_data, (batch_size+1, 3))
 
 # delete intial 'zeros' array elements
 price_series_data = np.delete(price_series_data, 0, axis=0)
