@@ -2,7 +2,7 @@
 
 A work in progress...
 
-## Convolution Neural Networks
+## Convolutional Neural Networks
 
 Convolutional Neural Networks (CNN's) are typically used in image classifcation tasks because they are able to take into account the spatial structure of an image.  This contrasts with a standard neural network, which would treat every pixel as an independent feature.
 
