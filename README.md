@@ -1,3 +1,5 @@
+# Temporal_CNN
+
 A work in progress...
 
 ## Convolution Neural Networks
@@ -13,3 +15,15 @@ Whilst attempting to predict market movements is a hard problem due to their hig
 ## Multi-modal Networks
 
 It may be true that markets behave differently at different times of the day or week (or year, in some cases).  By expanding the index of the time series into a one-hot encoded categorical dataset, we can feed this into a separate branch of the CNN, in the hope of increasing its predictive power.
+
+## 1_data_preparation.py
+
+Converts 'open-high-low-close' (OHLC) price data into a format suitable for machine learning.  Target labels are generated according to (potential) profitable trading conditions being met.  Extra data features are created, price and volume data are normalised around their moving averages, whilst time and day labels are separated out and one-hot encoded.  
+
+The working dataframe is then transformed into a tensor of dimensions [batch_size, steps, channels] by using a rolling window method.  Appropriate category labels are selected to match the last step in each window, and transformed into a tensors of dimensions [batch_size, categories].
+
+## To Do list
+Optimise model
+Generate precision-recall curves for target classes
+Generate confusion matrix for chosen thresholds
+Calculate profit factor and drawdown
