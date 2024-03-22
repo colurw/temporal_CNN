@@ -8,6 +8,7 @@
 import pandas as pd
 import numpy as np
 import time
+import pickle
 
 
 def convert_unix_time_into_day(seconds):
@@ -37,15 +38,16 @@ def atr(df, length=14):
 SMA_PERIOD = 50
 SMA_PERIOD_FAST = 20
 ATR_MULT = 0.25 
+HI_LO_WINDOW = 40
 
 # data preparation constants
-CHANNELS = 10
-WINDOW = 5
+PRICE_CHANNELS = 9
+WINDOW = 24
 STEP = 2
 
 
 # load price data into dataframe and reorder to recent = last
-df = pd.read_csv('OHLC_1h.csv', header=0, sep=',')
+df = pd.read_csv('data/OHLC_1h.csv', header=0, sep=',')
 df = df.sort_index(ascending=False, ignore_index=True)
 
 # calculate average true range and add as column to dataframe
@@ -85,6 +87,7 @@ y_labels.extend([float('NaN'), float('NaN')])
 # add labels to new dataframe column
 df['target'] = y_labels
 
+
 # calculate simple moving averages of closing price
 df[f'SMA_{SMA_PERIOD}'] = df['close'].rolling(SMA_PERIOD).mean()
 df[f'SMA_{SMA_PERIOD_FAST}'] = df['close'].rolling(SMA_PERIOD_FAST).mean()
@@ -93,19 +96,24 @@ df[f'SMA_{SMA_PERIOD_FAST}'] = df['close'].rolling(SMA_PERIOD_FAST).mean()
 df[f'vol SMA_{SMA_PERIOD}'] = df['volume USD'].rolling(SMA_PERIOD).mean()
 df[f'vol SMA_{SMA_PERIOD_FAST}'] = df['volume USD'].rolling(SMA_PERIOD_FAST).mean()
 
-# normalise data as fractional difference from relevant slower SMA
+# normalise price and volume data as fractional difference from relevant slower SMA
 df['open_'] = (df['open'] - df[f'SMA_{SMA_PERIOD}']) / df[f'SMA_{SMA_PERIOD}']
 df['high_'] = (df['high'] - df[f'SMA_{SMA_PERIOD}']) / df[f'SMA_{SMA_PERIOD}']
 df['low_'] = (df['low'] - df[f'SMA_{SMA_PERIOD}']) / df[f'SMA_{SMA_PERIOD}']
 df['close_'] = (df['close'] - df[f'SMA_{SMA_PERIOD}']) / df[f'SMA_{SMA_PERIOD}']
 df['vol_'] = (df['volume USD'] - df[f'vol SMA_{SMA_PERIOD}']) / df[f'vol SMA_{SMA_PERIOD}']
 
-# normalise data as fractional difference from relevant faster SMA
-df['open_f'] = (df['open'] - df[f'SMA_{SMA_PERIOD_FAST}']) / df[f'SMA_{SMA_PERIOD_FAST}']
-df['high_f'] = (df['high'] - df[f'SMA_{SMA_PERIOD_FAST}']) / df[f'SMA_{SMA_PERIOD_FAST}']
-df['low_f'] = (df['low'] - df[f'SMA_{SMA_PERIOD_FAST}']) / df[f'SMA_{SMA_PERIOD_FAST}']
+# normalise price and volume data as fractional difference from relevant faster SMA
 df['close_f'] = (df['close'] - df[f'SMA_{SMA_PERIOD_FAST}']) / df[f'SMA_{SMA_PERIOD_FAST}']
 df['vol_f'] = (df['volume USD'] - df[f'vol SMA_{SMA_PERIOD_FAST}']) / df[f'vol SMA_{SMA_PERIOD_FAST}']
+
+# calculate highest high and lowest low in the last 'HI_LO_WINDOW' prices
+df[f'HH_{HI_LO_WINDOW}'] = df['high'].rolling(HI_LO_WINDOW).max().shift()
+df[f'LL_{HI_LO_WINDOW}'] = df['low'].rolling(HI_LO_WINDOW).min().shift()
+
+# normalise close price as fractional difference from highest high and lowest low
+df['chh_'] = (df['close'] - df[f'HH_{HI_LO_WINDOW}']) / df[f'HH_{HI_LO_WINDOW}']
+df['cll_'] = (df[f'LL_{HI_LO_WINDOW}'] - df['close']) / df[f'HH_{HI_LO_WINDOW}']
 
 # create day and hour categories
 df['day'] = df['unix'].map(lambda _: convert_unix_time_into_day(_))
@@ -113,6 +121,7 @@ df['hour'] = df['date'].str.slice(start=11, stop=13).apply(pd.to_numeric) + 1
 
 # drop rows containing NaNs   
 df = df.dropna(axis=0)
+
 
 # create separate dataframe for one-hot encoded day/hour categories
 df_time = df[['day', 'hour']].copy()
@@ -123,9 +132,12 @@ df_ylabels = df['target'].copy()
 df_ylabels = pd.get_dummies(df_ylabels, columns=['target'])
 
 # tidy up price data
-df = df.drop(columns=['unix', 'date', 'volume USD', 'volume BTC', 'symbol', 
-                      'open', 'high', 'low', 'close', 'SMA_50', 'vol SMA_50', 
-                      'SMA_20', 'vol SMA_20', 'day', 'hour', 'target', 'ATR'], axis=1)
+df = df.drop(columns=['unix', 'date', 'volume USD', 'volume', 
+                      'open', 'high', 'low', 'close', 
+                      f'SMA_{SMA_PERIOD}', f'SMA_{SMA_PERIOD_FAST}', 
+                      f'vol SMA_{SMA_PERIOD}', f'vol SMA_{SMA_PERIOD_FAST}', 
+                      'day', 'hour', 'target', 'ATR', 
+                      f'HH_{HI_LO_WINDOW}', f'LL_{HI_LO_WINDOW}'], axis=1)
 
 # check dataframes
 print(df.head(), '\n', len(df))
@@ -138,7 +150,7 @@ print('mean:', df.stack().mean())
 
 
 # create numpy arrays to receive data
-price_series_data = np.zeros(shape=(WINDOW, CHANNELS))
+price_series_data = np.zeros(shape=(WINDOW, PRICE_CHANNELS))
 time_cat_data = np.zeros(shape=(1, 31))
 target_cat_data = np.zeros(shape=(1, 3))
 
@@ -146,7 +158,7 @@ batch_size = (len(df)-WINDOW) // STEP
 
 # iterate through price dataframe concatenating discrete arrays of size 'WINDOW', and spacing 'STEP'
 for i in range(batch_size): 
-    arr = df.iloc[[(i*STEP)+j for j in range(WINDOW)], [k for k in range(CHANNELS)]].to_numpy()
+    arr = df.iloc[[(i*STEP)+j for j in range(WINDOW)], [k for k in range(PRICE_CHANNELS)]].to_numpy()
     price_series_data = np.concatenate((price_series_data, arr))
 
 # iterate through categorical dataframes concatenating data relating to bottom row of each price window
@@ -159,7 +171,7 @@ for i in range(batch_size):
     target_cat_data = np.concatenate((target_cat_data, arr))
 
 # reshape arrays
-price_series_data = np.reshape(price_series_data, (batch_size+1, WINDOW, CHANNELS))
+price_series_data = np.reshape(price_series_data, (batch_size+1, WINDOW, PRICE_CHANNELS))
 time_cat_data = np.reshape(time_cat_data, (batch_size+1, 31))
 target_cat_data = np.reshape(target_cat_data, (batch_size+1, 3))
 
@@ -173,10 +185,14 @@ print(price_series_data, price_series_data.shape)
 print(time_cat_data, time_cat_data.shape)
 print(target_cat_data, target_cat_data.shape)
 
+# save data
+with open('data/all_data.pkl', 'wb') as file:
+    pickle.dump((price_series_data, time_cat_data, target_cat_data), file, protocol=4)
 
+   
 ## match up labels and time categories with array[batch_size, steps, channels]
-## do negative numbers affect convolution?
-## standardise
+## check negative numbers don't affect convolution?
+## standardise?
 ## add commission level to 'flat' calculation
 ## add bollinger bands
 ## add highest_high(40) level

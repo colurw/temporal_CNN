@@ -1,4 +1,5 @@
 .venv
 generator.py
 create_labels.py
-OHLC_1h.csv
+test.py
+*pycache*
