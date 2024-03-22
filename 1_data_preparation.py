@@ -196,4 +196,3 @@ with open('data/all_data.pkl', 'wb') as file:
 ## add commission level to 'flat' calculation
 ## add bollinger bands
 ## add highest_high(40) level
-
