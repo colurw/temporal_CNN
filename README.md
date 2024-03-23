@@ -4,7 +4,7 @@ A work in progress...
 
 ## Convolutional Neural Networks
 
-Convolutional Neural Networks (CNN's) are typically used in image classifcation tasks because they are able to take into account the spatial structure of an image.  This contrasts with a standard neural network, which would treat every pixel as an independent feature.
+Convolutional Neural Networks (CNN's) are commonly used in image classifcation tasks because they are able to take into account the spatial structure of an image.  This contrasts with a standard neural network, which would treat every pixel as an independent feature.
 
 Just as a 2-D image has red, green and blue channels, which are best interpreted when analysed together, a price-data time-series can be assigned channels representing open/high/low/close prices, and traded volume.
 
@@ -18,7 +18,7 @@ It may be true that markets behave differently at different times of the day or 
 
 ## 1_data_preparation.py
 
-Converts 'open-high-low-close' (OHLC) price data into a format suitable for machine learning.  Target labels are generated according to (potential) profitable trading conditions being met.  Extra data features are created, price and volume data are normalised around their moving averages, whilst time and day labels are separated out and one-hot encoded.  
+Converts 'open-high-low-close' (OHLC) price data into a format suitable for machine learning.  Target labels are generated according to (potential) profitable trading conditions being met.  Extra data features are created, price and volume data are centralised around their moving averages, whilst time and day labels are separated out and one-hot encoded.  
 
 The working dataframe is then transformed into a tensor of dimensions [batch_size, steps, channels] by using a rolling window method.  Appropriate category labels are selected to match the last step in each window, and transformed into a tensors of dimensions [batch_size, categories].
 
