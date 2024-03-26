@@ -18,7 +18,9 @@ It may be true that markets behave differently at different times of the day or 
 
 ## 1_data_preparation.py
 
-Converts 'open-high-low-close' (OHLC) price data into a format suitable for machine learning.  Target labels are generated according to (potential) profitable trading conditions being met.  Extra data features are created, price and volume data are centralised around their moving averages, whilst time and day labels are separated out and one-hot encoded.  
+Converts 'open-high-low-close' (OHLC) price data into a format suitable for machine learning.  It uses first-order filters and significant levels to extract learnable features from the raw data.
+
+Target labels are generated according to (potential) profitable trading conditions being met, whilst time and day labels are separated out and one-hot encoded.  
 
 The working dataframe is then transformed into a tensor of dimensions [batch_size, steps, channels] by using a rolling window method.  Appropriate category labels are selected to match the last step in each window, and transformed into a tensors of dimensions [batch_size, categories].
 
