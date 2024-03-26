@@ -3,7 +3,7 @@
 A work in progress...
 
 ## Convolutional Neural Networks
-<img src="https://github.com/colurw/temporal_CNN/assets/66322644/100a003f-288d-4e00-98b7-de1f8aecf0ac" align="right" width="200px"/>
+<img src="https://github.com/colurw/temporal_CNN/assets/66322644/100a003f-288d-4e00-98b7-de1f8aecf0ac" align="right" width="320px"/>
 
 Convolutional Neural Networks (CNN's) are commonly used in image classifcation tasks because they are able to take into account the spatial structure of an image.  This contrasts with a standard neural network, which would treat every pixel as an independent feature.
 
