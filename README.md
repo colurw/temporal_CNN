@@ -3,6 +3,7 @@
 A work in progress...
 
 ## Convolutional Neural Networks
+<img src="https://github.com/colurw/temporal_CNN/assets/66322644/100a003f-288d-4e00-98b7-de1f8aecf0ac" align="right" width="300px"/>
 
 Convolutional Neural Networks (CNN's) are commonly used in image classifcation tasks because they are able to take into account the spatial structure of an image.  This contrasts with a standard neural network, which would treat every pixel as an independent feature.
 
@@ -12,9 +13,10 @@ By treating a price-data time-series as a 1-dimensional image, we hope to improv
 
 Whilst attempting to predict price movements is a hard problem due to the highly stochastic nature of markets, even weak models can provide enough of a 'gambler's edge' to be profitable, assuming a large enough number of trades, and providing certain caveats are accounted for.
 
-## Multi-modal Networks
 
-It may be true that markets behave differently at different times of the day or week.  By expanding the index of the time series into a one-hot encoded categorical dataset, we can feed this into a separate branch of the CNN, in the hope of increasing its predictive power.
+## Multi-modal Networks 
+
+It may be true that markets behave differently at different times of the day or week.  By expanding the index of the time series into a one-hot encoded categorical dataset, we can feed this into a separate branch of the CNN, in the hope of increasing its predictive power. <br clear="right"/>
 
 ## 1_data_preparation.py
 
