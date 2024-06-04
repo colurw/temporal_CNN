@@ -29,8 +29,12 @@ Defines the neural network, trains it on the prepared data, then assesses the pr
 <br>
 We can see there are no prediction thresholds where the model is able to unambigously identify the positive class... This is unsurprising given the highly stocastic nature of market movements.  <br>
 <br>
-However, it also shows that the model does have a small edge over random guesswork, which may be exploitable given a number of suitably sized/risk-adjusted positions. <br clear="right"/>
+However, it also shows that the model does have a small edge over random guesswork, which may be exploitable given a number of suitably sized/risk-adjusted positions. <br>
+<br>
+Many potential optimisations of the model and training data can also be explored, in particular the predictive lengths and time-series 'bucket' sizes. <br clear="right"/>
 
 ## To Do list
 
-Calculate profit factor and drawdown for chosen thresholds, and including commision costs.
+* Calculate profit factor and drawdown for chosen thresholds, and including commision costs.
+* Improve trade closing routines with stops, as opposed to a fixed time period.
+
