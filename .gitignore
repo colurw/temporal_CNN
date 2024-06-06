@@ -5,4 +5,4 @@ test.py
 *pycache*
 *py_old*
 2_train_model_test.ipynb
-*models*
+*models/cnn*

@@ -1,7 +1,5 @@
 # Temporal_CNN
 
-A work in progress...
-
 ## Convolutional Neural Networks
 <img src="https://github.com/colurw/temporal_CNN/assets/66322644/100a003f-288d-4e00-98b7-de1f8aecf0ac" align="right" width="300px"/>
 
@@ -12,7 +10,6 @@ Just as a 2-D image has red, green and blue channels (which are best interpreted
 By treating a price-data time-series as a 1-dimensional image, we hope to improve the model's ability to recognise temporal correlations, and therefore predict profitable trading opportunities.  
 
 Whilst attempting to predict price movements is a hard problem due to the highly stochastic nature of markets, even weak models can provide enough of a 'gambler's edge' to be profitable, assuming a large enough number of trades, and providing certain caveats are accounted for.
-
 
 ## Multi-modal Networks 
 
@@ -26,6 +23,17 @@ Target labels are generated according to (potential) profitable trading conditio
 
 The working dataframe is then transformed into a tensor of dimensions [batch_size, steps, channels] by using a rolling window.  Appropriate target labels are selected to match the last timestep in each window, and transformed into a tensors of dimensions [batch_size, categories].
 
+## 2_train_model.py
+<img src="https://github.com/colurw/temporal_CNN/assets/66322644/7c7c89df-c071-48b1-8361-8ca29ae1142b" align="right" width="500px"/>
+Defines the neural network, trains it on the prepared data, then assesses the predictive abilities of the model by generating precision-recall graphs for each class ('market up' and 'market down'). <br>
+<br>
+We can see there are no prediction thresholds where the model is able to unambigously identify the positive class... This is unsurprising given the highly stocastic nature of market movements.  <br>
+<br>
+However, it also shows that the model does have a small edge over random guesswork, which may be exploitable given a number of suitably sized/risk-adjusted positions. <br>
+<br>
+Many potential optimisations of the model and training data can also be explored, in particular the predictive lengths and time-series 'bucket' sizes. <br clear="right"/>
+
 ## To Do list
-Generate precision-recall curves for target classes
-Calculate profit factor and drawdown for chosen thresholds
+
+Calculate profit factor and drawdown for chosen thresholds, and including commision costs.
+
