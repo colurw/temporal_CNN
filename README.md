@@ -35,5 +35,10 @@ Many potential optimisations of the model and training data can also be explored
 
 ## To Do list
 
+<<<<<<< HEAD
 Calculate profit factor and drawdown for chosen thresholds, and including commision costs.
+=======
+* Calculate profit factor and drawdown for chosen thresholds, and including commision costs.
+* Improve trade closing routines with stops, as opposed to a fixed time period.
+>>>>>>> 98b6b2dcfb1a0d14b783fb113ccbfd837d49b3e7
 
