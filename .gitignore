@@ -6,3 +6,17 @@ test.py
 *py_old*
 2_train_model_test.ipynb
 *models/cnn*
+data/dataframes_5.pkl
+1_data_preparation.ipynb
+test2.py
+data/dataframes_6.pkl
+data/outcomes_5.pkl
+data/outcomes_6.pkl
+data/outcomes_6a.pkl
+data/outcomes_6b.pkl
+data/tensors_5.pkl
+data/tensors_6.pkl
+results/PR_short4_1024_n01.png
+results/PR_short4_1024_n005.png
+results/PRT_short4_1024_n01.png
+results/PRT_short4_1024_n005.png
